@@ -1,0 +1,51 @@
+# .NET
+## Windows
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ist/
+[Dd]istPublic/
+[Ll]og/
+[Ll]ogFiles/
+[Tt]arget/
+
+# User-specific files
+.vs/
+.vscode/
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NPM packages
+node_modules/
+
+# React build
+build/
+
+# Webpack
+.cache/
+
+# VS Code
+.vscode/
+
+# ASP.NET Core Development Certificate
+https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-https?view=aspnetcore-3.1#development-certificates
+**/*.pfx
+**/*.cer
+
+# macOS
+.DS_Store
+
+# Linux
+*.swp
