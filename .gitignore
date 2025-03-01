@@ -34,7 +34,7 @@ GeneratedFiles/
 secrets.json
 .env
 
-tnode_modules/
+node_modules/
 
 dist/
 
