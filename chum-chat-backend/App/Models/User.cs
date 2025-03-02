@@ -12,8 +12,9 @@ public partial class User(string username, string name, string email, string pas
     private string _password = PasswordValidator(password);
     public DateTime CreatedAt { get; } = DateTime.UtcNow;
 
-    public List<IChat> Chats { get; set; } = [];
-    public List<IFriendRequest> FriendRequests { get; set; } = [];
+    public List<Chat> Chats { get; set; } = [];
+    public List<FriendRequest> SentFriendRequests { get; set; } = [];
+    public List<FriendRequest> ReceivedFriendRequests { get; set; } = [];
 
     public string Password
     {
@@ -33,10 +34,10 @@ public partial class User(string username, string name, string email, string pas
         set => _username = UsernameValidator(value);
     }
 
-    [GeneratedRegex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_+=<>?])[A-Za-z\d!@#$%^&*()\-_+=<>?]{8,}$")]
+    [GeneratedRegex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_+=<>?])[A-Za-z\d!@#$%^&*()\-_+=<>?]{8,100}$")]
     private static partial Regex PasswordRegex();
     
-    [GeneratedRegex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")]
+    [GeneratedRegex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,100}$")]
     private static partial Regex EmailRegex();
     
     [GeneratedRegex(@"^(?!_)[a-zA-Z0-9_]{3,16}(?<!_)$")]

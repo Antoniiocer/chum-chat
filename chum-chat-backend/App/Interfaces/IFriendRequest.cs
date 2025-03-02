@@ -1,3 +1,5 @@
+using chum_chat_backend.App.Models;
+
 namespace chum_chat_backend.App.Interfaces;
 
 public enum FriendRequestStatus
@@ -10,8 +12,8 @@ public enum FriendRequestStatus
 public interface IFriendRequest
 {
     string Id { get; }
-    IUser User { get; }
-    IUser Friend { get; }
+    User? User { get; set; } 
+    User? Friend { get; set; } 
     FriendRequestStatus Status { get; set; }
     DateTime CreatedAt { get; }
 }

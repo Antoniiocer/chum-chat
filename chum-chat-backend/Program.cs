@@ -1,6 +1,7 @@
 using chum_chat_backend.App.Database;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 Env.Load();
 
@@ -11,8 +12,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ChumChatContext>(options =>
-    options.UseSqlServer(Environment.GetEnvironmentVariable("DATABASE_URL"))
-);
+    options.UseMySql(Environment.GetEnvironmentVariable("DATABASE_URL"), 
+        ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("DATABASE_URL"))));
+
 
 var app = builder.Build();
 

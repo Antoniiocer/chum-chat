@@ -1,3 +1,5 @@
+using chum_chat_backend.App.Models;
+
 namespace chum_chat_backend.App.Interfaces;
 
 public interface IUser
@@ -8,6 +10,7 @@ public interface IUser
     string Email { get; set; }
     string Password { get; set; }
     DateTime CreatedAt { get; }
-    List<IChat> Chats { get; }
-    List<IFriendRequest> FriendRequests { get; }
+    List<Chat> Chats { get; }
+    List<FriendRequest> SentFriendRequests { get; }
+    List<FriendRequest> ReceivedFriendRequests { get; }
 }

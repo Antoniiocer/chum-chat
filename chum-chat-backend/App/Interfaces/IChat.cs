@@ -1,3 +1,5 @@
+using chum_chat_backend.App.Models;
+
 namespace chum_chat_backend.App.Interfaces;
 
 public interface IChat
@@ -6,6 +8,6 @@ public interface IChat
     string Name { get;set; }
     string Description { get;set; }
     string Image { get;set; }
-    List<IUser> UserList { get;set; }
-    List<IMessage> MessageList { get;set; }
+    List<User> UserList { get;set; }
+    List<Message> MessageList { get;set; }
 }
