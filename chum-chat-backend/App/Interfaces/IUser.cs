@@ -7,5 +7,7 @@ public interface IUser
     string Name { get; set; }
     string Email { get; set; }
     string Password { get; set; }
-    List<IChat> Chats { get; set; }
+    DateTime CreatedAt { get; }
+    List<IChat> Chats { get; }
+    List<IFriendRequest> FriendRequests { get; }
 }
