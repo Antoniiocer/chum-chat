@@ -1,29 +1,33 @@
-using chum_chat_backend.App.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
+using chum_chat_backend.App.Interfaces.Models;
+using static chum_chat_backend.App.Utils.Validators;
+
 
 namespace chum_chat_backend.App.Models
 {
     public class Message : IMessage
     {
-        public string Id { get; private set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         private string _text = string.Empty;
-        public DateTime Date { get; private set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public string UserId { get; set; }
+        public string ChatId { get; set; }
+    
+        //Navigation properties
+        public User? User { get; set; }
+        public Chat? Chat { get; set; }
 
-        public string? SenderId { get; private set; }
-        public string? ChatId { get; private set; }
-
-        public User? Sender { get; private set; }
-        public Chat? Chat { get; private set; }
-
+        
+        
         public Message() {}
         
-        public Message(Chat chat, User sender, string text)
+        public Message(IMessageCreator message)
         {
-            Sender = sender;
-            Chat = chat;
-            _text = TextValidator(text);
-            SenderId = sender.Id;
-            ChatId = chat.Id;
+            Id = message.Id ?? Guid.NewGuid().ToString();
+            Text = message.Text;
+            CreatedAt = message.CreatedAt ?? DateTime.UtcNow;
+            UserId = message.UserId;
+            ChatId = message.ChatId;
         }
 
         public string Text 
@@ -31,12 +35,24 @@ namespace chum_chat_backend.App.Models
             get => _text; 
             set => _text = TextValidator(value); 
         }
-
-        private static string TextValidator(string text)
-        {
-            if (text.Length <= 100) return text;
-            throw new ArgumentException("Text must be between 100 characters.");
-        }
+        
     }
-    
+
+    public class MessageCreate : IMessageCreateDto
+    {
+        public required string Text { get; set; }
+        public required string UserId { get; set; }
+        public required string ChatId { get; set; }
+    }
+
+    public class MessageUpdate : IMessageUpdateDto
+    {
+        public required string Id { get; set; }
+        public required string Text { get; set; }
+    }
+
+    public class MessageDelete : IMessageDeleteDto
+    {
+        public required string Id { get; set; }
+    }
 }

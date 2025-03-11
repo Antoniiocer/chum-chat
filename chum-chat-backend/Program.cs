@@ -1,7 +1,10 @@
+using System.Text.Json.Serialization;
+using chum_chat_backend.App;
 using chum_chat_backend.App.Database;
+using chum_chat_backend.App.Interfaces.Services;
+using chum_chat_backend.App.Services;
 using DotNetEnv;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 Env.Load();
 
@@ -11,12 +14,33 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 builder.Services.AddDbContext<ChumChatContext>(options =>
     options.UseMySql(Environment.GetEnvironmentVariable("DATABASE_URL"), 
         ServerVersion.AutoDetect(Environment.GetEnvironmentVariable("DATABASE_URL"))));
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+builder.Services.AddScoped<ChumChatSession>();
 
 
 var app = builder.Build();
+
+app.UseSession();
 
 using (var scope = app.Services.CreateScope())
 {

@@ -1,23 +1,19 @@
-using System.Text.RegularExpressions;
-using chum_chat_backend.App.Interfaces;
+using System.Text.Json.Serialization;
+using chum_chat_backend.App.Interfaces.Models;
+using static chum_chat_backend.App.Utils.Validators;
 
 namespace chum_chat_backend.App.Models;
 
-public partial class Chat : IChat
+public class Chat: IChat
 {
-    public string Id { get; private set; } = Guid.NewGuid().ToString();
-    
+    public string Id { get;  set; } = Guid.NewGuid().ToString();
+    public string Image { get; set; } = string.Empty;
     private string _name = string.Empty;
     private string _description = string.Empty;
-    private string _image = string.Empty;
-
-    public List<User> UserList { get; set; } = [];
-    public List<Message> MessageList { get; set; } = [];
-
     public string Name
     {
         get => _name;
-        set => _name = NameValidator(value);
+        set => _name = ChatNameValidator(value);
     }
 
     public string Description
@@ -25,48 +21,54 @@ public partial class Chat : IChat
         get => _description;
         set => _description = DescriptionValidator(value);
     }
-
-    public string Image
-    {
-        get => _image;
-        set => _image = ImageRouteValidator(value);
-    }
     
+    //Navigation properties
+    [JsonIgnore]
+    public List<UserChat>? UserChat { get; set; } = [];
+    public List<User>? Users { get; set; } = [];
+    public List<Message>? Messages { get; set; } = [];
+
     public Chat() { }
     
-    public Chat(string name, string description, string image, List<User> userList)
+    public Chat(IChatCreator chat)
     {
-        _name = NameValidator(name);
-        _description = DescriptionValidator(description);
-        _image = ImageRouteValidator(image);
-        UserList = userList;
+        Id = chat.Id ?? Guid.NewGuid().ToString();
+        _name = NameValidator(chat.Name);
+        _description = DescriptionValidator(chat.Description);
+        Image = chat.Image;
     }
+    
+}
 
-    [GeneratedRegex(@"^/storage/images/[a-fA-F0-9\-]+\.(jpg|jpeg|png|gif|bmp|tiff|webp)$")]
-    private static partial Regex ImagePathRegex();
+public class ChatCreate: IChatCreateDto
+{
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public string Image { get; set; } = string.Empty;
+    public required List<string> UserIds { get; set; }
+    
+}
 
-    private static string ImageRouteValidator(string imageRoute)
-    {
-        if (!ImagePathRegex().IsMatch(imageRoute))
-        {
-            throw new ArgumentException("Invalid image route format");
-        }
-        return imageRoute;
-    }
+public class ChatUpdate : IChatUpdateDto
+{
+    public required string Id { get; set; }
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+    public string? Image { get; set; }
+    public List<string>? UserIds { get; set; }
+}
 
-    private static string NameValidator(string name)
-    {
-        if (string.IsNullOrWhiteSpace(name) || name.Length > 20)
-            throw new ArgumentException("Chat Name must be between 1 and 20 characters");
+public class ChatDelete : IChatDeleteDto
+{
+    public required string Id { get; set; }
+}
 
-        return name;
-    }
-
-    private static string DescriptionValidator(string description)
-    {
-        if (description.Length > 50)
-            throw new ArgumentException("Chat Description must be less than 50 characters");
-
-        return description;
-    }
+public class ChatUserDto : IChatUserDto
+{
+    public required string Id { get; set; }
+    public required string Name { get; set; }
+    public required string Description { get; set; }
+    public required string Image { get; set; }
+    public required List<UserChatDto> Users { get; set; }
+    public List<Message>? Messages { get; set; }
 }

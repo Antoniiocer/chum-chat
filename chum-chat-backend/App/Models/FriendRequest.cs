@@ -1,25 +1,43 @@
-using chum_chat_backend.App.Interfaces;
+using chum_chat_backend.App.Interfaces.Models;
 
 namespace chum_chat_backend.App.Models;
 
-public class FriendRequest : IFriendRequest
+public class FriendRequest: IFriendRequest
 {
-    public string Id { get; private set; } = Guid.NewGuid().ToString();
-
-    public string UserId { get; private set; } = string.Empty;
-    public string FriendId { get; private set; } = string.Empty;
-
-    public User? User { get; set; }
-    public User? Friend { get; set; }
-
+    public string Id { get; set; } = Guid.NewGuid().ToString();
     public FriendRequestStatus Status { get; set; } = FriendRequestStatus.Pending;
-    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public string SenderId { get; set; }
+    public string ReceiverId { get; set; }
+    
+    //Navigation properties
+    public User Sender { get; set; }
+    public User Receiver { get; set; }
+    
 
     public FriendRequest() {}
 
-    public FriendRequest(string userId, string friendId)
+    public FriendRequest(IFriendRequestCreator friendRequest)
     {
-        UserId = userId;
-        FriendId = friendId;
+       Id = friendRequest.Id ?? Guid.NewGuid().ToString();
+       Status = friendRequest.Status ?? FriendRequestStatus.Pending;
+       CreatedAt = friendRequest.CreatedAt ?? DateTime.UtcNow;
     }
+}
+
+public class FriendRequestCreate: IFriendRequestCreateDto
+{
+    public required string SenderId { get; set; }
+    public required string ReceiverId { get; set; }
+}
+
+public class FriendRequestUpdate : IFriendRequestUpdateDto
+{
+    public required string Id { get; set; }
+    public required FriendRequestStatus Status { get; set; }
+}
+
+public class FriendRequestDelete : IFriendRequestDeleteDto
+{
+    public required string Id { get; set; }
 }

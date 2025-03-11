@@ -1,25 +1,21 @@
-using System.Text.RegularExpressions;
-using chum_chat_backend.App.Interfaces;
+using System.Text.Json.Serialization;
+using chum_chat_backend.App.Interfaces.Models;
+using static chum_chat_backend.App.Utils.Validators;
 
 namespace chum_chat_backend.App.Models;
 
-public partial class User(string username, string name, string email, string password) : IUser
+public class User: IUser
 {
-    public string Id { get; } = Guid.NewGuid().ToString();
-    private string _username = UsernameValidator(username);
-    public string Name { get; set; } = name;
-    private string _email = EmailValidator(email);
-    private string _password = PasswordValidator(password);
-    public DateTime CreatedAt { get; } = DateTime.UtcNow;
-
-    public List<Chat> Chats { get; set; } = [];
-    public List<FriendRequest> SentFriendRequests { get; set; } = [];
-    public List<FriendRequest> ReceivedFriendRequests { get; set; } = [];
+    public string Name
+    {
+        get => _name;
+        set => _name = NameValidator(value);
+    }
 
     public string Password
     {
         get => _password;
-        set => _password = PasswordValidator(value);
+        set => _password = HashPassword(PasswordValidator(value));
     }
 
     public string Email
@@ -33,39 +29,70 @@ public partial class User(string username, string name, string email, string pas
         get => _username;
         set => _username = UsernameValidator(value);
     }
-
-    [GeneratedRegex(@"^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()\-_+=<>?])[A-Za-z\d!@#$%^&*()\-_+=<>?]{8,100}$")]
-    private static partial Regex PasswordRegex();
+    public string Id { get; set; } = Guid.NewGuid().ToString();
+    private string _username;
+    private string _name;
+    private string _email;
+    private string _password;
+    public DateTime CreatedAt { get; set; }
+    public bool Disabled { get; set; }
     
-    [GeneratedRegex(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,100}$")]
-    private static partial Regex EmailRegex();
     
-    [GeneratedRegex(@"^(?!_)[a-zA-Z0-9_]{3,16}(?<!_)$")]
-    private static partial Regex UsernameRegex();
+    //Navigation properties
+    [JsonIgnore]
+    public List<UserChat>? UserChat { get; set; } = [];
+    [JsonIgnore]
+    public List<UserCall>? UserCalls { get; set; } = [];
+    public List<Chat>? Chats { get; set; } = [];
+    public List<Message>? Messages { get; set; } = [];
+    public List<FriendRequest>? FriendRequestSent { get; set; } = [];
+    public List<FriendRequest>? FriendRequestReceived { get; set; } = [];
+    
+    public User() {}
 
-    private static string PasswordValidator(string password)
+    public User(IUserCreator user)
     {
-        var formattedPassword = password.Trim();
-        if (PasswordRegex().IsMatch(formattedPassword)) return HashPassword(formattedPassword);
-        throw new ArgumentException("Invalid password", nameof(password));
+        Id = user.Id ?? Guid.NewGuid().ToString();
+        _username = user.Username;
+        _name = user.Name;
+        _email = user.Email;
+        _password = user.Password;
+        CreatedAt = DateTime.UtcNow;
+        Disabled = false;
     }
-
-    private static string EmailValidator(string email)
-    {
-        var formattedEmail = email.Trim().ToLower();
-        if (EmailRegex().IsMatch(formattedEmail)) return formattedEmail;
-        throw new ArgumentException("Invalid email", nameof(email));
-    }
-
-    private static string UsernameValidator(string username)
-    {
-        var formattedUsername = username.Trim();
-        if (UsernameRegex().IsMatch(formattedUsername)) return formattedUsername;
-        throw new ArgumentException("Invalid username", nameof(username));
-    }
-
+    
     private static string HashPassword(string password)
     {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
+}
+
+public class UserCreate: IUserCreateDto
+{
+    public required string Username { get; set; }
+    public required string Name { get; set; }
+    public required string Email { get; set; }
+    public required string Password { get; set; }
+}
+
+public class UserUpdate : IUserUpdateDto
+{
+    public required string Id { get; set; }
+    public string? Username { get; set; }
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Password { get; set; }
+}
+
+public class UserDelete : IUserDeleteDto
+{
+    public required string Id { get; set; }
+}
+
+public class UserChatDto : IUserChatDto
+{
+    public required string Id { get; set; }
+    public required string Name { get; set; }
+    public required string Username { get; set; }
+    public required bool Disabled { get; set; }
 }
