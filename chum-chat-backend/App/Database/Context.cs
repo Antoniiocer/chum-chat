@@ -45,6 +45,11 @@ public class ChumChatContext(DbContextOptions<ChumChatContext> options) : DbCont
         modelBuilder.Entity<User>()
             .Property(x => x.Id)
             .HasMaxLength(36);
+        
+        modelBuilder.Entity<User>()
+            .Property(x => x.Auth0Id)
+            .HasMaxLength(40);
+        
         modelBuilder.Entity<User>()
             .HasMany(c => c.Chats)
             .WithMany(u => u.Users)

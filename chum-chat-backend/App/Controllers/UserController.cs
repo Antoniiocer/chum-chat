@@ -1,21 +1,22 @@
 using chum_chat_backend.App.Interfaces.Services;
 using chum_chat_backend.App.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace chum_chat_backend.App.Controllers;
 
-
+[Authorize]
 [Route("api/user")]
 [ApiController]
 public class UserController(IUserService userService) : ControllerBase
 {
     
-    [HttpPost("create")]
-    public async Task<ActionResult<User>> CreateUser([FromBody] UserCreate user)
+    [HttpPost("register")]
+    public async Task<ActionResult<User>> Register([FromBody] UserCreate user)
     {
         try
         {
-            var createdUser = await userService.CreateUser(user);
+            var createdUser = await userService.Register(user);
             return Ok(createdUser);
         }
         catch (Exception e)

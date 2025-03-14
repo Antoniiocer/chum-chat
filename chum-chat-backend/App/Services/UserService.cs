@@ -1,19 +1,35 @@
+using System.Security.Claims;
 using chum_chat_backend.App.Database;
-using chum_chat_backend.App.Interfaces.Models;
 using chum_chat_backend.App.Interfaces.Services;
 using chum_chat_backend.App.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace chum_chat_backend.App.Services;
 
-public class UserService(ChumChatContext context) : IUserService
+public class UserService(ChumChatContext context, IHttpContextAccessor httpContextAccessor) : IUserService
 {
-    public async Task<User> CreateUser(UserCreate user)
+    public async Task<User> Register(UserCreate user)
     {
+        var auth0Id = httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(auth0Id))
+        {
+            throw new InvalidOperationException("Auth0 ID is missing.");
+        }
+
+        var userExists = await context.Users
+            .FirstOrDefaultAsync(u => u.Email == user.Email || u.Username == user.Username);
+        if (userExists != null)
+        {
+            throw new InvalidOperationException("User already exists with the same email or username.");
+        }
+
         var userToCreate = new User
-            { Name = user.Name, Email = user.Email, Password = user.Password, Username = user.Username };
-        var userExists = await CheckIfUserExists(userToCreate);
-        if (userExists != null) throw new InvalidOperationException(userExists);
+        {
+            Auth0Id = auth0Id,
+            Name = user.Name,
+            Email = user.Email,
+            Username = user.Username
+        };
         
         var createdUser = context.Users.Add(userToCreate);
         await context.SaveChangesAsync();

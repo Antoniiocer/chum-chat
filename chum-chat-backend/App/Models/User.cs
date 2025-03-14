@@ -30,6 +30,7 @@ public class User: IUser
         set => _username = UsernameValidator(value);
     }
     public string Id { get; set; } = Guid.NewGuid().ToString();
+    public required string Auth0Id { get; set; }
     private string _username;
     private string _name;
     private string _email;
@@ -69,7 +70,9 @@ public class User: IUser
 
 public class UserCreate: IUserCreateDto
 {
+    public required string Auth0Id { get; set; }
     public required string Username { get; set; }
+
     public required string Name { get; set; }
     public required string Email { get; set; }
     public required string Password { get; set; }
@@ -78,6 +81,8 @@ public class UserCreate: IUserCreateDto
 public class UserUpdate : IUserUpdateDto
 {
     public required string Id { get; set; }
+    public required string Auth0Id { get; set; }
+
     public string? Username { get; set; }
     public string? Name { get; set; }
     public string? Email { get; set; }
@@ -87,11 +92,15 @@ public class UserUpdate : IUserUpdateDto
 public class UserDelete : IUserDeleteDto
 {
     public required string Id { get; set; }
+    public required string Auth0Id { get; set; }
+
 }
 
 public class UserChatDto : IUserChatDto
 {
     public required string Id { get; set; }
+    public required string Auth0Id { get; set; }
+
     public required string Name { get; set; }
     public required string Username { get; set; }
     public required bool Disabled { get; set; }

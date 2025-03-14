@@ -1,9 +1,11 @@
 using chum_chat_backend.App.Interfaces.Services;
 using chum_chat_backend.App.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace chum_chat_backend.App.Controllers;
 
+[Authorize]
 [Route("api/chat")]
 [ApiController]
 public class ChatController(IChatService chatService): ControllerBase

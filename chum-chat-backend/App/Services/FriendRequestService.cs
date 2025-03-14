@@ -52,12 +52,14 @@ public class FriendRequestService(ChumChatContext context) : IFriendRequestServi
                 {
                     Id = r.Receiver.Id, 
                     Disabled = r.Receiver.Disabled, 
+                    Auth0Id = r.Receiver.Auth0Id,
                     Name =  r.Receiver.Name, 
                     Username =  r.Receiver.Username
                 },
                 Sender = new UserChatDto
                 {
                     Id = r.Sender.Id, 
+                    Auth0Id = r.Sender.Auth0Id,
                     Disabled = r.Sender.Disabled, 
                     Name =  r.Sender.Name, 
                     Username =  r.Sender.Username
@@ -80,12 +82,14 @@ public class FriendRequestService(ChumChatContext context) : IFriendRequestServi
                 {
                     Id = r.Receiver.Id, 
                     Disabled = r.Receiver.Disabled, 
+                    Auth0Id = r.Receiver.Auth0Id,
                     Name =  r.Receiver.Name, 
                     Username =  r.Receiver.Username
                 },
                 Sender = new UserChatDto
                 {
                     Id = r.Sender.Id, 
+                    Auth0Id = r.Sender.Auth0Id,
                     Disabled = r.Sender.Disabled, 
                     Name =  r.Sender.Name, 
                     Username =  r.Sender.Username

@@ -52,6 +52,7 @@ public class ChatService(ChumChatContext context) : IChatService
                 Users = c.Users.Select(u => new UserChatDto
                 {
                     Id = u.Id,
+                    Auth0Id = u.Auth0Id,
                     Name = u.Name,
                     Username = u.Username,
                     Disabled = u.Disabled
@@ -78,6 +79,7 @@ public class ChatService(ChumChatContext context) : IChatService
                 {
                     Id = u.Id,
                     Name = u.Name,
+                    Auth0Id = u.Auth0Id,
                     Username = u.Username,
                     Disabled = u.Disabled
                 }).ToList()
