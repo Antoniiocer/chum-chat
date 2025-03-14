@@ -36,12 +36,12 @@ public class ChatController(IChatService chatService): ControllerBase
         }
     }
     
-    [HttpGet("get/list")]
-    public async Task<ActionResult<Chat>> GetChats()
+    [HttpGet("get/list/{userId}")]
+    public async Task<ActionResult<Chat>> GetChats(string userId)
     {
         try
         {
-            return Ok(await chatService.GetChats());
+            return Ok(await chatService.GetChats(userId));
         }
         catch (Exception e)
         {

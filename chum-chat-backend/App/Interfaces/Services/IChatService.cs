@@ -8,6 +8,6 @@ public interface IChatService
     Task<bool> DeleteChat(string id);
     
     Task<ChatUserDto?> GetChat(string id);
-    Task<List<ChatUserDto>> GetChats();
+    Task<List<ChatUserDto>> GetChats(string id);
     Task<Chat> UpdateChat(ChatUpdate chat);
 }

@@ -44,3 +44,11 @@ public interface IFriendRequestDeleteDto
 {
     string Id { get; set; }
 }
+
+public interface IFriendRequestUserDto
+{
+    string Id { get; set; }
+    FriendRequestStatus Status { get; set; }
+    UserChatDto Receiver { get; set; }
+    UserChatDto Sender { get; set; }
+}

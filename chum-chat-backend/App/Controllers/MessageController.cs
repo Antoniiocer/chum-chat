@@ -37,12 +37,12 @@ public class MessageController(IMessageService messageService): ControllerBase
     }
 
 
-    [HttpGet("get-list/{id}")]
-    public async Task<ActionResult<List<Message>>> GetList(string id)
+    [HttpGet("get-list/{chatId}")]
+    public async Task<ActionResult<List<Message>>> GetList(string chatId)
     {
         try
         {
-            return Ok(await messageService.GetMessages(id));
+            return Ok(await messageService.GetMessages(chatId));
         }
         catch (Exception e)
         {

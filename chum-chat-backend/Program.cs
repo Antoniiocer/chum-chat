@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using chum_chat_backend.App;
 using chum_chat_backend.App.Database;
 using chum_chat_backend.App.Interfaces.Services;
 using chum_chat_backend.App.Services;
@@ -33,6 +32,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IChatService, ChatService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IFriendRequestService, FriendRequestService>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 builder.Services.AddScoped<ChumChatSession>();

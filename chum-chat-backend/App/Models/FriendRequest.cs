@@ -22,6 +22,8 @@ public class FriendRequest: IFriendRequest
        Id = friendRequest.Id ?? Guid.NewGuid().ToString();
        Status = friendRequest.Status ?? FriendRequestStatus.Pending;
        CreatedAt = friendRequest.CreatedAt ?? DateTime.UtcNow;
+       SenderId = friendRequest.SenderId;
+       ReceiverId = friendRequest.ReceiverId;
     }
 }
 
@@ -40,4 +42,13 @@ public class FriendRequestUpdate : IFriendRequestUpdateDto
 public class FriendRequestDelete : IFriendRequestDeleteDto
 {
     public required string Id { get; set; }
+}
+
+public class FriendRequestUserDto : IFriendRequestUserDto
+{
+    public required string Id { get; set; }
+    public required FriendRequestStatus Status { get; set; }
+    public required UserChatDto Receiver { get; set; }
+    public required UserChatDto Sender { get; set; }
+    
 }

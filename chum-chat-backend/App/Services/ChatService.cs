@@ -63,11 +63,11 @@ public class ChatService(ChumChatContext context) : IChatService
         
     }
     
-    public async Task<List<ChatUserDto>> GetChats()
+    public async Task<List<ChatUserDto>> GetChats(string id)
     {
         return await context.Chats
-            .Include(c => c.Users)
-            .Include( c => c.Messages)
+            .Include(c => c.Users) 
+            .Where(c => c.Users.Any(u => u.Id == id))
             .Select(c => new ChatUserDto
             {
                 Id = c.Id,
@@ -81,8 +81,10 @@ public class ChatService(ChumChatContext context) : IChatService
                     Username = u.Username,
                     Disabled = u.Disabled
                 }).ToList()
-            }).ToListAsync();
+            })
+            .ToListAsync();
     }
+
 
 
     public async Task<bool> DeleteChat(string id)
